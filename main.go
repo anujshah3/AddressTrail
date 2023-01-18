@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/anujshah3/AddressTrail/controller"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -11,6 +13,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
+
+	http.HandleFunc("/login", controller.GoogleLogin)
+	http.HandleFunc("/google/callback", controller.GoogleCallBack)
 
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
