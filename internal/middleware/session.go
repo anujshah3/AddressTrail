@@ -20,7 +20,7 @@ func GetSession(req *http.Request, sessionName string) (*sessions.Session, error
 
 func SetAuthenticated(session *sessions.Session, userInfo map[string]interface{}) {
 	session.Values["authenticated"] = true
-	session.Values["user"] = userInfo
+	session.Values["userData"] = userInfo
 	session.Options.MaxAge = 1 * 60
 }
 
@@ -33,7 +33,7 @@ func IsAuthenticated(session *sessions.Session) bool {
 }
 
 func GetUserInfo(session *sessions.Session) map[string]interface{} {
-	if userInfo, ok := session.Values["user"].(map[string]interface{}); ok {
+	if userInfo, ok := session.Values["userData"].(map[string]interface{}); ok {
 		return userInfo
 	}
 

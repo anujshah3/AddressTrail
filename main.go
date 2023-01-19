@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/anujshah3/AddressTrail/internal/handlers"
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/gorilla/sessions"
 )
 
@@ -22,7 +23,7 @@ func main() {
 
 	http.HandleFunc("/login", handlers.GoogleLoginHandler)
 	http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
-	http.HandleFunc("/dashboard", handlers.DashboardHandler)
+	http.HandleFunc("/dashboard", middleware.AuthMiddleware(handlers.DashboardHandler))
 
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

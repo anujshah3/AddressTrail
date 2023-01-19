@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/anujshah3/AddressTrail/config"
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/gorilla/sessions"
 )
 
@@ -17,6 +18,13 @@ import (
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 func GoogleLoginHandler(res http.ResponseWriter, req *http.Request){
+	session, _ := middleware.GetSession(req, "user-session")
+
+	if middleware.IsAuthenticated(session) {
+		http.Redirect(res, req, "/dashboard", http.StatusFound)
+		return
+	}
+
 	googleConfig := config.SetupConfig()
 	RandomString := os.Getenv("RANDOM_STRING")	
 		
@@ -64,8 +72,7 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 		return
 	}
 
-	// Create a new session
-	session, err := store.Get(req, "user-session")
+	session, err := middleware.GetSession(req, "user-session")
 	if err != nil {
 		fmt.Fprintln(res, err, "Failed to create session")
 		return
@@ -73,10 +80,9 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 	
 	gob.Register(userData)
 
-	// Store user data in the session
-	session.Values["userData"] = userData
-    session.Values["authenticated"] = true
-	session.Options.MaxAge = 1 * 60
+	middleware.SetAuthenticated(session, userData)
+
+	fmt.Println(userData)
 
 	err = session.Save(req, res)
 	if err != nil {

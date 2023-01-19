@@ -3,22 +3,22 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 )
 
 
 
 func DashboardHandler(res http.ResponseWriter, req *http.Request) {
-    session, _ := store.Get(req, "user-session")
+	session, _ := middleware.GetSession(req, "user-session")
 
-    // Check if user is authenticated
-    if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-        http.Error(res, "Forbidden", http.StatusForbidden)
-        return
-    }
+	if !middleware.IsAuthenticated(session) {
+		http.Error(res, "Forbidden", http.StatusForbidden)
+		return
+	}
 
-    if userData, ok := session.Values["userData"].(string); ok {
-        fmt.Println("User Data:", userData)
-    }
+    userInfo := middleware.GetUserInfo(session)
+    fmt.Println("User Data:", userInfo)
     
 	http.ServeFile(res, req, "web/templates/dashboard.html")
 }
