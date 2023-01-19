@@ -5,21 +5,26 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/anujshah3/AddressTrail/config"
 )
 
 func GoogleLogin(res http.ResponseWriter, req *http.Request){
 	googleConfig := config.SetupConfig()
-	url := googleConfig.AuthCodeURL("randomstate")
+	RandomString := os.Getenv("RANDOM_STRING")	
+		
+	url := googleConfig.AuthCodeURL(RandomString)
 
 	http.Redirect(res, req, url, http.StatusSeeOther)
 }
 
 func GoogleCallBack(res http.ResponseWriter, req *http.Request){
-
+	// Access environment variables
+	RandomString := os.Getenv("RANDOM_STRING")	
+	
 	state := req.URL.Query()["state"][0]
-	if state != "randomstate" {
+	if state != RandomString {
 		fmt.Fprintf(res, "states don't match")
 		return
 	}

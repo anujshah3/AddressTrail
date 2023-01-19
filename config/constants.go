@@ -18,11 +18,12 @@ func SetupConfig() *oauth2.Config{
 	// Access environment variables
 	ClientID := os.Getenv("GOOGLE_CLIENT_ID")	
 	ClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
+	RedirectURL := os.Getenv("AUTH_CALLBACK_URL")
 
 	conf := &oauth2.Config{
 		ClientID:     ClientID,
 		ClientSecret: ClientSecret,
-		RedirectURL:  "http://localhost:8080/google/callback",
+		RedirectURL:  RedirectURL,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile",

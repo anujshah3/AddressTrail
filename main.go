@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/", handler)
 
 	http.HandleFunc("/login", controller.GoogleLogin)
-	http.HandleFunc("/google/callback", controller.GoogleCallBack)
+	http.HandleFunc("/dashboard", controller.GoogleCallBack)
 
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
