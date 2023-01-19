@@ -3,19 +3,26 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
-	"github.com/anujshah3/AddressTrail/controller"
+	"github.com/anujshah3/AddressTrail/internal/handlers"
+	"github.com/gorilla/sessions"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "web/templates/index.html")
+
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+
+func handleIndex(res http.ResponseWriter, req *http.Request) {
+	http.ServeFile(res, req, "web/templates/index.html")
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", handleIndex)
 
-	http.HandleFunc("/login", controller.GoogleLogin)
-	http.HandleFunc("/dashboard", controller.GoogleCallBack)
+	http.HandleFunc("/login", handlers.GoogleLoginHandler)
+	http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
+	http.HandleFunc("/dashboard", handlers.DashboardHandler)
 
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
