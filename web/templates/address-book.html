@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AddressTrail - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="/static/js/scripts.js"></script>
+  </head>
+  <body>
+    <!-- Add navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="/" class="title">AddressTrail</a>
+        <div class="right-nav">
+          <span class="right-nav-links navbar-links"
+            >Welcome, {{ .Name }}!</span
+          >
+          <a href="/dashboard" class="right-nav-links navbar-links"
+            >Dashboard</a
+          >
+          <a href="/" class="right-nav-links navbar-links">Manage Address</a>
+          <a href="/" class="right-nav-links navbar-links">Log Out</a>
+        </div>
+      </nav>
+    </header>
+    <section class="container"></section>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>

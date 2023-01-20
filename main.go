@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/login", handlers.GoogleLoginHandler)
 	http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
 	http.HandleFunc("/dashboard", middleware.AuthMiddleware(handlers.DashboardHandler))
+	http.HandleFunc("/address-book", middleware.AuthMiddleware(handlers.AddressBookHandler))
 
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
