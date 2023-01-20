@@ -2,12 +2,15 @@ package handlers
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/anujshah3/AddressTrail/internal/middleware"
 )
 
-
+type PageData struct {
+	Name string
+}
 
 func DashboardHandler(res http.ResponseWriter, req *http.Request) {
 	session, _ := middleware.GetSession(req, "user-session")
@@ -18,7 +21,24 @@ func DashboardHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
     userInfo := middleware.GetUserInfo(session)
-    fmt.Println("User Data:", userInfo)
-    
-	http.ServeFile(res, req, "web/templates/dashboard.html")
+    fmt.Println("User Data:", userInfo["given_name"])
+	userName := fmt.Sprint(userInfo["given_name"])
+	data := PageData{
+		Name: userName,
+	}
+
+	tmpl, err := template.ParseFiles("web/templates/dashboard.html")
+	
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Render the template with the data
+	err = tmpl.Execute(res, data)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// http.ServeFile(res, req, "web/templates/dashboard.html")
 }

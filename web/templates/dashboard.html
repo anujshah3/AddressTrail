@@ -11,9 +11,60 @@
     <header>
       <nav class="navbar">
         <a href="#" class="title">AddressTrail</a>
-        <span class="welcome">Welcome!</span>
+        <span class="welcome">Welcome, {{ .Name }}!</span>
       </nav>
     </header>
+    <section class="container">
+      <div class="left left-home map-timeline-container">
+        <section class="timeline-section">
+          <ul class="timeline">
+            <li>
+              <div class="left-position-address">
+                <div class="year-wrapper">
+                  <span class="year">Since 2013</span>
+                </div>
+                <div class="address">
+                  <span class="address-street">Street Address</span>
+                  <span class="address-apt">Apt/Unit</span>
+                  <span class="address-city">City</span>
+                  <span class="address-state">State</span>
+                  <span class="address-zip">Zip</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="right-position-address">
+                <div class="year-wrapper">
+                  <span class="year">2012 - 2013</span>
+                </div>
+                <div class="address">
+                  <span class="address-street">Street Address</span>
+                  <span class="address-apt">Apt/Unit</span>
+                  <span class="address-city">City</span>
+                  <span class="address-state">State</span>
+                  <span class="address-zip">Zip</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="left-position-address">
+                <div class="year-wrapper">
+                  <span class="year">2010 - 2012</span>
+                </div>
+                <div class="address">
+                  <span class="address-street">Street Address</span>
+                  <span class="address-apt">Apt/Unit</span>
+                  <span class="address-city">City</span>
+                  <span class="address-state">State</span>
+                  <span class="address-zip">Zip</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <div class="right"></div>
+    </section>
 
     <script src="scripts.js"></script>
   </body>
