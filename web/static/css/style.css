@@ -265,3 +265,61 @@ header {
 .right-position-address .address {
   margin: 1em 0 0 0.75em;
 }
+
+.center-view {
+  padding: 0rem 15rem 0rem 15rem;
+}
+.address-list-container {
+  position: relative;
+  margin-top: 6px;
+  display: block;
+  width: 100%;
+}
+
+.address-line {
+  padding: 30px 60px 30px 25px;
+  text-align: left;
+  border: 1px solid hsla(40, 7%, 8%, 0.01);
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.address-holder {
+  padding-top: 15px;
+}
+
+.add-new-address {
+  margin: 20px 0 0;
+  padding: 1.42em 2.3em;
+  background: none;
+  width: 100%;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1.17rem;
+  line-height: 1.2;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
