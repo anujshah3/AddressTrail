@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/anujshah3/AddressTrail/config"
-	"github.com/anujshah3/AddressTrail/models"
+	"github.com/anujshah3/AddressTrail/internal/models"
 )
 
 func AddUser(user *models.User) error {

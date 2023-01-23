@@ -10,7 +10,7 @@ type User struct {
 }
 
 type AddressWithDates struct {
-	Address   *Address
+	AddressID   string
 	StartDate time.Time
 	EndDate   time.Time
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/anujshah3/AddressTrail/config"
-	"github.com/anujshah3/AddressTrail/models"
+	"github.com/anujshah3/AddressTrail/internal/models"
 )
 
 func InsertAddress(address *models.Address) error {
