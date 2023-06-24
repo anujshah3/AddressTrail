@@ -11,6 +11,8 @@ import (
 
 	"github.com/anujshah3/AddressTrail/config"
 	"github.com/anujshah3/AddressTrail/internal/middleware"
+	"github.com/anujshah3/AddressTrail/internal/models"
+	"github.com/anujshah3/AddressTrail/internal/services"
 	"github.com/gorilla/sessions"
 )
 
@@ -80,6 +82,19 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 	
 	gob.Register(userData)
 
+	user := &models.User{
+		ID:    "",
+		Name:  userData["name"].(string),
+		Email: userData["email"].(string),
+		Addresses: []*models.AddressWithDates{},
+	}
+	userID, err := services.AddUser(user)
+	if err != nil {
+		fmt.Fprintln(res, "Failed to add user to the database")
+		return
+	}
+
+	userData["userID"] = userID
 	middleware.SetAuthenticated(session, userData)
 
 	fmt.Println(userData)

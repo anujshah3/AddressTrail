@@ -20,6 +20,10 @@ func handleIndex(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+    // router := gin.Default()
+
+	// routes.SetupAPIRoutes(router)
+
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/login", handlers.GoogleLoginHandler)
 	http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
