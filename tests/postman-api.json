@@ -1,0 +1,190 @@
+{
+  "info": {
+    "_postman_id": "be3a0ce0-6b7f-4a20-b413-2b1bc76c4288",
+    "name": "AddressTrail API",
+    "description": "Collection of APIs for AddressTrail",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Add New User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "John Doe",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "john.doe@example.com",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userID",
+              "value": "user_id_here",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Address to User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userID",
+              "value": "user_id_here",
+              "type": "text"
+            },
+            {
+              "key": "startDate",
+              "value": "2023-06-25",
+              "type": "text"
+            },
+            {
+              "key": "endDate",
+              "value": "2023-07-01",
+              "type": "text"
+            },
+            {
+              "key": "street",
+              "value": "123 Main St",
+              "type": "text"
+            },
+            {
+              "key": "unit",
+              "value": "Apt 4B",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "New York",
+              "type": "text"
+            },
+            {
+              "key": "state",
+              "value": "NY",
+              "type": "text"
+            },
+            {
+              "key": "postalCode",
+              "value": "10001",
+              "type": "text"
+            },
+            {
+              "key": "country",
+              "value": "USA",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/users/addresses",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api", "users", "addresses"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User Address",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userID",
+              "value": "user_id_here",
+              "type": "text"
+            },
+            {
+              "key": "addressID",
+              "value": "address_id_here",
+              "type": "text"
+            },
+            {
+              "key": "street",
+              "value": "456 Elm St",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "Los Angeles",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/users/addresses",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api", "users", "addresses"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User Addresses",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userID",
+              "value": "user_id_here",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/users/addresses",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api", "users", "addresses"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

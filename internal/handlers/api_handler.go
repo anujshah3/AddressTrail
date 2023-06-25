@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,10 +10,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func AddNewUserHandler(c *gin.Context) {
+	user := &models.User{
+		ID:    "",
+		Name:  c.PostForm("name"),
+		Email: c.PostForm("email"),
+		Addresses: []*models.AddressWithDates{},
+	}
+	userID, err := services.AddUser(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User inserted successfully",
+		"user":    userID,
+	})
+}
 
 func DeleteUserHandler(c *gin.Context) {
-	email := c.PostForm("email")
-	err := services.DeleteUser(email)
+	userID := c.PostForm("userID")
+	err := services.DeleteUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -27,10 +47,8 @@ func DeleteUserHandler(c *gin.Context) {
 
 func AddAddressToUserHandler(c *gin.Context) {
 	userID := c.PostForm("userID")
-	addressID := c.PostForm("addressID")
 	startDateStr := c.PostForm("startDate")
 	endDateStr := c.PostForm("endDate")
-
 	startDate, err := time.Parse("2006-01-02", startDateStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -47,13 +65,33 @@ func AddAddressToUserHandler(c *gin.Context) {
 		return
 	}
 
-	address := &models.AddressWithDates{
+	address := &models.Address{
+		Street:     c.PostForm("street"),
+		Unit:       c.PostForm("unit"),
+		City:       c.PostForm("city"),
+		State:      c.PostForm("state"),
+		PostalCode: c.PostForm("postalCode"),
+		Country:    c.PostForm("country"),
+	}
+
+	addressID, err := services.InsertAddress(address)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	addressWithDates := &models.AddressWithDates{
 		AddressID: addressID,
 		StartDate: startDate,
 		EndDate:   endDate,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
-
-	err = services.AddNewAddressToUser(userID, address)
+	fmt.Println(addressWithDates, userID)
+	err = services.AddNewAddressToUser(userID, addressWithDates)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -67,51 +105,153 @@ func AddAddressToUserHandler(c *gin.Context) {
 }
 
 
-func DeleteAddressFromUserHandler(c *gin.Context) {
+func UpdateUserAddressHandler(c *gin.Context) {
 	userID := c.PostForm("userID")
 	addressID := c.PostForm("addressID")
-	startDateStr := c.PostForm("startDate")
-	endDateStr := c.PostForm("endDate")
 
-	startDate, err := time.Parse("2006-01-02", startDateStr)
+	address, err := services.GetAddressByID(addressID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid startDate format",
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Address not found",
 		})
 		return
 	}
 
-	endDate, err := time.Parse("2006-01-02", endDateStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid endDate format",
-		})
-		return
+	// Check if fields are present
+	fieldsUpdated := false
+
+	if street := c.PostForm("street"); street != "" {
+		address.Street = street
+		fieldsUpdated = true
+	}
+	if unit := c.PostForm("unit"); unit != "" {
+		address.Unit = unit
+		fieldsUpdated = true
+	}
+	if city := c.PostForm("city"); city != "" {
+		address.City = city
+		fieldsUpdated = true
+	}
+	if state := c.PostForm("state"); state != "" {
+		address.State = state
+		fieldsUpdated = true
+	}
+	if postalCode := c.PostForm("postalCode"); postalCode != "" {
+		address.PostalCode = postalCode
+		fieldsUpdated = true
+	}
+	if country := c.PostForm("country"); country != "" {
+		address.Country = country
+		fieldsUpdated = true
 	}
 
-	address := &models.AddressWithDates{
-		AddressID: addressID,
-		StartDate: startDate,
-		EndDate:   endDate,
+	if fieldsUpdated {
+		err = services.UpdateAddress(addressID, address)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 	}
 
-	err = services.DeleteAddressFromUser(userID, address)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
+	oldStartDateStr := c.PostForm("oldStartDate")
+	oldEndDateStr := c.PostForm("oldEndDate")
+	newStartDateStr := c.PostForm("newStartDate")
+	newEndDateStr := c.PostForm("newEndDate")
+
+	if oldStartDateStr != "" && oldEndDateStr != "" && newStartDateStr != "" && newEndDateStr != "" {
+		oldStartDate, err := time.Parse("2006-01-02", oldStartDateStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid oldStartDate format",
+			})
+			return
+		}
+
+		oldEndDate, err := time.Parse("2006-01-02", oldEndDateStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid oldEndDate format",
+			})
+			return
+		}
+
+		newStartDate, err := time.Parse("2006-01-02", newStartDateStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid newStartDate format",
+			})
+			return
+		}
+
+		newEndDate, err := time.Parse("2006-01-02", newEndDateStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid newEndDate format",
+			})
+			return
+		}
+
+		err = services.UpdateFilteredAddresses(userID, addressID, oldStartDate, oldEndDate, newStartDate, newEndDate)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Address deleted from user successfully",
+		"message": "Address updated successfully",
 	})
 }
 
+// func DeleteAddressFromUserHandler(c *gin.Context) {
+// 	userID := c.PostForm("userID")
+// 	addressID := c.PostForm("addressID")
+// 	startDateStr := c.PostForm("startDate")
+// 	endDateStr := c.PostForm("endDate")
+
+// 	startDate, err := time.Parse("2006-01-02", startDateStr)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "Invalid startDate format",
+// 		})
+// 		return
+// 	}
+
+// 	endDate, err := time.Parse("2006-01-02", endDateStr)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "Invalid endDate format",
+// 		})
+// 		return
+// 	}
+
+// 	address := &models.AddressWithDates{
+// 		AddressID: addressID,
+// 		StartDate: startDate,
+// 		EndDate:   endDate,
+// 	}
+
+// 	err = services.DeleteAddressFromUser(userID, address)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error": err.Error(),
+// 		})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Address deleted from user successfully",
+// 	})
+// }
+
 
 func GetUserAddressesHandler(c *gin.Context) {
-	email := c.PostForm("email")
-	addresses, err := services.GetUserAddresses(email)
+	userID := c.Query("userID")
+	addresses, err := services.GetUserAddresses(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

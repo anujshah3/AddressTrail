@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
-	"github.com/anujshah3/AddressTrail/internal/handlers"
-	"github.com/anujshah3/AddressTrail/internal/middleware"
+	"github.com/anujshah3/AddressTrail/internal/routes"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
 )
 
@@ -20,19 +19,21 @@ func handleIndex(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-    // router := gin.Default()
+    router := gin.Default()
 
-	// routes.SetupAPIRoutes(router)
+	routes.SetupAPIRoutes(router)
+	
+	router.Run(":8080")
 
-	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/login", handlers.GoogleLoginHandler)
-	http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
-	http.HandleFunc("/dashboard", middleware.AuthMiddleware(handlers.DashboardHandler))
-	http.HandleFunc("/address-book", middleware.AuthMiddleware(handlers.AddressBookHandler))
+	// http.HandleFunc("/", handleIndex)
+	// http.HandleFunc("/login", handlers.GoogleLoginHandler)
+	// http.HandleFunc("/auth/google/callback", handlers.GoogleCallBackHandler)
+	// http.HandleFunc("/dashboard", middleware.AuthMiddleware(handlers.DashboardHandler))
+	// http.HandleFunc("/address-book", middleware.AuthMiddleware(handlers.AddressBookHandler))
 
-	fs := http.FileServer(http.Dir("web/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	// fs := http.FileServer(http.Dir("web/static"))
+	// http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	fmt.Println("Server listening on port 8080")
-	http.ListenAndServe(":8080", nil)
+	// fmt.Println("Server listening on port 8080")
+	// http.ListenAndServe(":8080", nil)
 }

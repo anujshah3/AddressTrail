@@ -6,8 +6,11 @@ import (
 )
 
 func SetupAPIRoutes(router *gin.Engine) {
+	router.POST("/api/users", handlers.AddNewUserHandler)
 	router.DELETE("/api/users", handlers.DeleteUserHandler)
-	router.POST("/api/users/addresses", handlers.AddAddressToUserHandler)
-	router.PATCH("/api/users/addresses", handlers.DeleteAddressFromUserHandler)
+
 	router.GET("/api/users/addresses", handlers.GetUserAddressesHandler)
+	router.POST("/api/users/addresses", handlers.AddAddressToUserHandler)
+	router.PUT("/api/users/addresses", handlers.UpdateUserAddressHandler)
+	// router.PATCH("/api/users/addresses", handlers.DeleteAddressFromUserHandler)
 }

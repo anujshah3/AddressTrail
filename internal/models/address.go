@@ -1,8 +1,8 @@
 package models
 
 type Address struct {
-	ID         string
 	Street     string
+	Unit       string
 	City       string
 	State      string
 	PostalCode string
