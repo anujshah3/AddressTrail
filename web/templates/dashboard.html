@@ -24,42 +24,66 @@
     </header>
     <section class="container">
       <div class="left left-home map-timeline-container">
-        <section class="timeline-section">
-          <ul class="timeline">
-            <li>
-              <div class="left-position-address">
-                <div class="year-wrapper">
-                  <span class="year">Since 2013</span>
-                </div>
-                <div class="address">
-                  <span class="address-street">Street Address</span>
-                  <span class="address-apt">Apt/Unit</span>
-                  <span class="address-city">City</span>
-                  <span class="address-state">State</span>
-                  <span class="address-zip">Zip</span>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="right-position-address">
-                <div class="year-wrapper">
-                  <span class="year">2012 - 2013</span>
-                </div>
-                <div class="address">
-                  <span class="address-street">Street Address</span>
-                  <span class="address-apt">Apt/Unit</span>
-                  <span class="address-city">City</span>
-                  <span class="address-state">State</span>
-                  <span class="address-zip">Zip</span>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </section>
+        <section class="timeline-section" id="timeline-section"></section>
       </div>
       <div class="right"></div>
     </section>
+    <script>
+      fetch(
+        "http://localhost:8080/api/users/addresses?userID=649f0ca8a675e19e10f56798"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const timelineSection = document.getElementById("timeline-section");
+          const ul = document.createElement("ul");
+          ul.classList.add("timeline");
 
-    <script src="scripts.js"></script>
+          let isLeft = true;
+
+          for (let i = data.length - 1; i >= 0; i--) {
+            const address = data[i];
+            const li = document.createElement("li");
+            const startDate = new Date(address.StartDate);
+            const endDate = new Date(address.EndDate);
+
+            const startMonth = startDate.toLocaleString("default", {
+              month: "short",
+            });
+            const endMonth = endDate.toLocaleString("default", {
+              month: "short",
+            });
+
+            const startMonthYear = `${startMonth} ${startDate.getFullYear()}`;
+            const endMonthYear = `${endMonth} ${endDate.getFullYear()}`;
+
+            const addressHTML = `
+              <div class="${
+                isLeft ? "left-position-address" : "right-position-address"
+              }">
+                <div class="year-wrapper">
+                  <span class="year">${startMonthYear} - ${endMonthYear}</span>
+                </div>
+                <div class="address">
+                  <span class="address-street">${address.Street}</span>
+                  <span class="address-apt">${address.Unit}</span>
+                  <span class="address-city">${address.City}</span>
+                  <span class="address-state">${address.State}</span>
+                  <span class="address-zip">${address.PostalCode}</span>
+                </div>
+              </div>
+            `;
+            li.innerHTML = addressHTML;
+            li.dataset.addressId = address.AddressID;
+            ul.appendChild(li);
+
+            isLeft = !isLeft;
+          }
+
+          timelineSection.appendChild(ul);
+        })
+        .catch((error) => {
+          console.error("Error fetching user addresses:", error);
+        });
+    </script>
   </body>
 </html>

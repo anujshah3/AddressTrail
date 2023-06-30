@@ -7,7 +7,6 @@
     <script src="/static/js/scripts.js"></script>
   </head>
   <body>
-    <!-- Add navbar -->
     <header>
       <nav class="navbar">
         <a href="/" class="title">AddressTrail</a>
@@ -24,44 +23,65 @@
       </nav>
     </header>
     <section class="container center-view">
-      <div class="address-list-container">
+      <div class="address-list-container" id="address-list-container">
         <button type="button" class="add-new-address" id="openFormBtn">
           <span class="button__label">Add New Address</span>
         </button>
-        <div class="address-holder">
-          <button class="address-line">
-            <div class="street-address-display">Street Address</div>
-            <div class="city-state-address-display">
-              City, State 03/2022 - 05/2022
-            </div>
-            <div
-              class="apply-flow-profile-item-tile__edit-icon background-color-1"
-            ></div>
-          </button>
-        </div>
-        <div class="address-holder">
-          <button class="address-line">
-            <div class="street-address-display">Street Address</div>
-            <div class="city-state-address-display">
-              City, State 03/2022 - 05/2022
-            </div>
-            <div
-              class="apply-flow-profile-item-tile__edit-icon background-color-1"
-            ></div>
-          </button>
-        </div>
-        <div class="address-holder">
-          <button class="address-line">
-            <div class="street-address-display">Street Address</div>
-            <div class="city-state-address-display">
-              City, State 03/2022 - 05/2022
-            </div>
-            <div
-              class="apply-flow-profile-item-tile__edit-icon background-color-1"
-            ></div>
-          </button>
-        </div>
       </div>
     </section>
+    <script>
+      fetch(
+        "http://localhost:8080/api/users/addresses?userID=649f0ca8a675e19e10f56798"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const addressListContainer = document.getElementById(
+            "address-list-container"
+          );
+
+          data.reverse().forEach((address) => {
+            const addressHolder = document.createElement("div");
+            addressHolder.classList.add("address-holder");
+
+            const addressLine = document.createElement("button");
+            addressLine.classList.add("address-line");
+            addressLine.dataset.addressId = address.AddressID;
+
+            const streetAddressDisplay = document.createElement("div");
+            streetAddressDisplay.classList.add("street-address-display");
+            streetAddressDisplay.innerText = address.Street;
+
+            const cityStateAddressDisplay = document.createElement("div");
+            cityStateAddressDisplay.classList.add("city-state-address-display");
+
+            const startDate = new Date(address.StartDate);
+            const endDate = new Date(address.EndDate);
+
+            const startMonthYear = `${startDate.toLocaleString("default", {
+              month: "short",
+            })} ${startDate.getFullYear()}`;
+            const endMonthYear = `${endDate.toLocaleString("default", {
+              month: "short",
+            })} ${endDate.getFullYear()}`;
+
+            cityStateAddressDisplay.innerText = `${address.City}, ${address.State} ${startMonthYear} - ${endMonthYear}`;
+
+            const editIcon = document.createElement("div");
+            editIcon.classList.add(
+              "apply-flow-profile-item-tile__edit-icon",
+              "background-color-1"
+            );
+
+            addressLine.appendChild(streetAddressDisplay);
+            addressLine.appendChild(cityStateAddressDisplay);
+            addressLine.appendChild(editIcon);
+            addressHolder.appendChild(addressLine);
+            addressListContainer.appendChild(addressHolder);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching user addresses:", error);
+        });
+    </script>
   </body>
 </html>

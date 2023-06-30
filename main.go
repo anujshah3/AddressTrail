@@ -10,6 +10,7 @@ import (
 func main() {
     router := gin.Default()
 
+	routes.SetupDevAPIRoutes(router)
 	routes.SetupAPIRoutes(router)
 
 	routes.SetupWebRoutes(router)

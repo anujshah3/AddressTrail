@@ -259,7 +259,5 @@ func GetUserAddressesHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"addresses": addresses,
-	})
+	c.JSON(http.StatusOK, addresses)
 }
