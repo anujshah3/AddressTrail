@@ -16,3 +16,15 @@ type AddressWithDates struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type UserAddresses struct {
+	AddressID string
+	Street     string
+	Unit       string
+	City       string
+	State      string
+	PostalCode string
+	Country    string
+	StartDate time.Time
+	EndDate   time.Time
+}
