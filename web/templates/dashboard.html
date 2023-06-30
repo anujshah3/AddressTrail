@@ -5,6 +5,11 @@
     <title>AddressTrail - Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css" />
     <script src="/static/js/scripts.js"></script>
+    <style>
+      .address span {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -64,11 +69,13 @@
                   <span class="year">${startMonthYear} - ${endMonthYear}</span>
                 </div>
                 <div class="address">
-                  <span class="address-street">${address.Street}</span>
-                  <span class="address-apt">${address.Unit}</span>
+                  <span class="address-street">${address.Street}${
+              address.Unit ? ", " + address.Unit : ""
+            }</span>
                   <span class="address-city">${address.City}</span>
-                  <span class="address-state">${address.State}</span>
-                  <span class="address-zip">${address.PostalCode}</span>
+                  <span class="address-state">${address.State}${
+              address.PostalCode ? ", " + address.PostalCode : ""
+            }</span>
                 </div>
               </div>
             `;

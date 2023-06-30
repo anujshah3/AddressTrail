@@ -117,6 +117,15 @@ header {
   list-style-type: none;
 }
 
+.timeline-section {
+  overflow-y: scroll;
+  max-height: 450px;
+}
+.timeline-section::-webkit-scrollbar {
+  width: 0 !important;
+  display: none;
+}
+
 .timeline:before {
   position: absolute;
   left: 50%;
@@ -153,7 +162,7 @@ header {
 }
 
 .timeline li {
-  padding: 3em 0;
+  padding: 1.5em 0;
 }
 
 .timeline li:after {
