@@ -10,7 +10,6 @@ import (
 	func SetupDevAPIRoutes(router *gin.Engine) {
 		router.POST("/api/dev/users", handlers.AddNewUserHandler)
 		router.DELETE("/api/dev/users", handlers.DeleteUserHandler)
-
 		router.GET("/api/dev/users/addresses", handlers.GetUserAddressesHandler)
 		router.POST("/api/dev/users/addresses", handlers.AddAddressToUserHandler)
 		router.PUT("/api/dev/users/addresses", handlers.UpdateUserAddressHandler)
@@ -20,7 +19,6 @@ import (
 	func SetupAPIRoutes(router *gin.Engine) {
 		router.POST("/api/users", handlers.AddNewUserHandler)
 		router.DELETE("/api/users", handlers.DeleteUserHandler)
-
 		router.GET("/api/users/addresses", handlers.GetUserAddressesHandler)
 		router.POST("/api/users/addresses", handlers.AddAddressToUserHandler)
 		router.PUT("/api/users/addresses", handlers.UpdateUserAddressHandler)
@@ -35,7 +33,7 @@ import (
 		router.GET("/login", gin.WrapF(handlers.GoogleLoginHandler))
 		router.GET("/auth/google/callback", gin.WrapF(handlers.GoogleCallBackHandler))
 		router.GET("/dashboard", gin.WrapF(middleware.AuthMiddleware(handlers.DashboardHandler)))
-		router.GET("/address-book", gin.WrapF(middleware.AuthMiddleware(handlers.AddressBookHandler)))
+		router.GET("/addresses", gin.WrapF(middleware.AuthMiddleware(handlers.AddressBookHandler)))
 
 		// router.GET("/logout", gin.WrapF(handlers.LogoutHandler))
 

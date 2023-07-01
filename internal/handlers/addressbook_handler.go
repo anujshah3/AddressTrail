@@ -24,7 +24,7 @@ func AddressBookHandler(res http.ResponseWriter, req *http.Request) {
 		Name: userName,
 	}
 
-	tmpl, err := template.ParseFiles("web/templates/address-book.html")
+	tmpl, err := template.ParseFiles("web/templates/addresses.html")
 	
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)

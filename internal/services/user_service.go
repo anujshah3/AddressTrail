@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -26,13 +25,13 @@ func AddUser(user *models.User) (string, error) {
 	err = userCollection.FindOne(context.Background(), bson.M{"email": user.Email}).Decode(&existingUser)
 	if err == mongo.ErrNoDocuments {
 		opts := options.InsertOne()
-		res, err := userCollection.InsertOne(context.Background(), user, opts)
+		_, err := userCollection.InsertOne(context.Background(), user, opts)
 		if err != nil {
 			return "", err
 		}
-		userID := res.InsertedID.(primitive.ObjectID).Hex()
-		return userID, nil
+		return user.ID, nil
 	}
+
 	return existingUser.ID, nil
 }
 
@@ -46,12 +45,8 @@ func DeleteUser(userID string) error {
 	defer client.Disconnect(context.Background())
 
 	userCollection := config.GetCollection(client, "user")
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return err
-	}
 
-	_, err = userCollection.DeleteOne(context.Background(), bson.M{"_id": objectID})
+	_, err = userCollection.DeleteOne(context.Background(), bson.M{"id": userID})
 	if err != nil {
 		return err
 	}
@@ -70,12 +65,7 @@ func AddNewAddressToUser(userID string, address *models.AddressWithDates) error 
 
 	userCollection := config.GetCollection(client, "user")
 
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return err
-	}
-
-	filter := bson.M{"_id": objectID}
+	filter := bson.M{"id": userID}
 	update := bson.M{"$push": bson.M{"addresses": address}}
 	_, err = userCollection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
@@ -95,12 +85,8 @@ func DeleteAddressFromUser(userID string, address *models.AddressWithDates) erro
 	defer client.Disconnect(context.Background())
 
 	userCollection := config.GetCollection(client, "user")
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return err
-	}
 
-	filter := bson.M{"_id": objectID}
+	filter := bson.M{"id": userID}
 	update := bson.M{"$pull": bson.M{"addresses": address}}
 	_, err = userCollection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
@@ -120,12 +106,7 @@ func GetUserAddresses(userID string) ([]*models.UserAddressesResponse, error) {
 	defer client.Disconnect(context.Background())
 
 	userCollection := config.GetCollection(client, "user")
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	filter := bson.M{"_id": objectID}
-	// projection := bson.M{"addresses": 1}
+	filter := bson.M{"id": userID}
 	projection := bson.M{"addresses.addressid": 1, "addresses.startdate": 1, "addresses.enddate": 1}
 
 	result := []*models.UserAddressesResponse{}
@@ -183,7 +164,7 @@ func UpdateFilteredAddresses(userID string, addressID string, startDate time.Tim
 	userCollection := config.GetCollection(client, "user")
 
 	filter := bson.M{
-		"_id": userID,
+		"id": userID,
 		"addresses": bson.M{
 			"$elemMatch": bson.M{
 				"addressID": addressID,

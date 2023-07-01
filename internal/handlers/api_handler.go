@@ -7,11 +7,12 @@ import (
 	"github.com/anujshah3/AddressTrail/internal/models"
 	"github.com/anujshah3/AddressTrail/internal/services"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func AddNewUserHandler(c *gin.Context) {
 	user := &models.User{
-		ID:    "",
+		ID:    uuid.New().String(),
 		Name:  c.PostForm("name"),
 		Email: c.PostForm("email"),
 		Addresses: []*models.AddressWithDates{},

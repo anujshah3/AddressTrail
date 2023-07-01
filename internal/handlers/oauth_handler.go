@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/google/uuid"
+
 	"github.com/anujshah3/AddressTrail/config"
 	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/anujshah3/AddressTrail/internal/models"
@@ -83,7 +85,7 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 	gob.Register(userData)
 
 	user := &models.User{
-		ID:    "",
+		ID:    uuid.New().String(),
 		Name:  userData["name"].(string),
 		Email: userData["email"].(string),
 		Addresses: []*models.AddressWithDates{},
