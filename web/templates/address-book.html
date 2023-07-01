@@ -5,6 +5,7 @@
     <title>AddressTrail - Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css" />
     <script src="/static/js/scripts.js"></script>
+    <style></style>
   </head>
   <body>
     <header>
@@ -29,6 +30,171 @@
         </button>
       </div>
     </section>
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>Add New Address</h2>
+        <form class="new-address-form">
+          <section class="new-address-section">
+            <div class="input-container">
+              <label class="new-address-label" for="street">Street</label>
+              <input
+                class="new-address-input"
+                type="text"
+                id="street"
+                name="street"
+              />
+            </div>
+            <div class="input-container-row">
+              <div class="left-input-container">
+                <label class="new-address-label" for="unit">Unit</label>
+                <input
+                  class="new-address-input"
+                  type="text"
+                  id="unit"
+                  name="unit"
+                />
+              </div>
+              <div class="right-input-container">
+                <label class="new-address-label" for="city">City</label>
+                <input
+                  class="new-address-input"
+                  type="text"
+                  id="city"
+                  name="city"
+                />
+              </div>
+            </div>
+            <div class="input-container-row">
+              <div class="left-input-container">
+                <label class="new-address-label" for="state">State</label>
+                <input
+                  class="new-address-input"
+                  type="text"
+                  id="state"
+                  name="state"
+                />
+              </div>
+              <div class="right-input-container">
+                <label class="new-address-label" for="zip">ZIP</label>
+                <input
+                  class="new-address-input"
+                  type="text"
+                  id="zip"
+                  name="zip"
+                />
+              </div>
+            </div>
+            <div class="input-container-row">
+              <div class="left-input-container">
+                <label class="new-address-label" for="country">Country</label>
+                <input
+                  class="new-address-input"
+                  type="text"
+                  id="country"
+                  name="country"
+                />
+              </div>
+              <div class="right-input-container">
+                <label class="new-address-label" for="current">Current</label>
+                <input
+                  type="checkbox"
+                  id="current"
+                  name="current"
+                  onclick="toggleEndDateInput()"
+                />
+              </div>
+            </div>
+            <div class="input-container-row">
+              <div class="left-input-container">
+                <label class="new-address-label" for="startDate"
+                  >Start Date</label
+                >
+                <input
+                  class="new-address-input"
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                />
+              </div>
+              <div class="right-input-container" id="endDateContainer">
+                <label class="new-address-label" for="endDate">End Date</label>
+                <input
+                  class="new-address-input"
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                />
+              </div>
+            </div>
+          </section>
+          <div class="save-container">
+            <input type="submit" value="Save" onclick="return true" />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ...remaining HTML code and JavaScript... -->
+
+    <script>
+      const openFormBtn = document.getElementById("openFormBtn");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const modal = document.getElementById("modal");
+
+      openFormBtn.addEventListener("click", () => {
+        modal.style.display = "block";
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      const addressForm = document.getElementById("addressForm");
+
+      addressForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        // Handle form submission here
+        // You can access the form values using addressForm.elements
+        // For example, addressForm.elements.street.value will give you the street address value
+        // You can make an AJAX request to submit the form data to the server
+        // After successful submission, you can close the modal or display a success message
+        modal.style.display = "none";
+      });
+    </script>
+    <script>
+      function toggleEndDateInput() {
+        var endDateContainer = document.getElementById("endDateContainer");
+        var currentCheckbox = document.getElementById("current");
+
+        if (currentCheckbox.checked) {
+          endDateContainer.style.display = "none";
+        } else {
+          endDateContainer.style.display = "block";
+        }
+      }
+
+      function setDefaultStartDate() {
+        var startDateInput = document.getElementById("startDate");
+
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, "0");
+        var day = String(today.getDate()).padStart(2, "0");
+
+        var todayFormatted = year + "-" + month + "-" + day;
+        startDateInput.value = todayFormatted;
+      }
+
+      setDefaultStartDate();
+    </script>
     <script>
       fetch(
         "http://localhost:8080/api/users/addresses?userID=649f0ca8a675e19e10f56798"
