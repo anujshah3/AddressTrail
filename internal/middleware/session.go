@@ -18,10 +18,10 @@ func GetSession(req *http.Request, sessionName string) (*sessions.Session, error
 	return session, nil
 }
 
-func SetAuthenticated(session *sessions.Session, userInfo map[string]interface{}) {
+func SetAuthenticated(session *sessions.Session, userID string) {
 	session.Values["authenticated"] = true
-	session.Values["userData"] = userInfo
-	session.Options.MaxAge = 5 * 60
+	session.Values["userID"] = userID
+	session.Options.MaxAge = 10 * 60
 }
 
 func IsAuthenticated(session *sessions.Session) bool {
@@ -32,12 +32,12 @@ func IsAuthenticated(session *sessions.Session) bool {
 	return false
 }
 
-func GetUserInfo(session *sessions.Session) map[string]interface{} {
-	if userInfo, ok := session.Values["userData"].(map[string]interface{}); ok {
-		return userInfo
+func GetUserID(session *sessions.Session) string {
+	if userID, ok := session.Values["userID"].(string); ok {
+		return userID
 	}
 
-	return nil
+	return ""
 }
 
 func ClearSession(session *sessions.Session) {
@@ -47,7 +47,7 @@ func ClearSession(session *sessions.Session) {
 
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		session, _ := GetSession(req, "user-session")
+		session, _ := GetSession(req, "session")
 
 		if !IsAuthenticated(session) {
 			http.Redirect(res, req, "/login", http.StatusSeeOther)

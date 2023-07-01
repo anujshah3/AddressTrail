@@ -10,16 +10,16 @@ import (
 
 
 func AddressBookHandler(res http.ResponseWriter, req *http.Request) {
-	session, _ := middleware.GetSession(req, "user-session")
+	session, _ := middleware.GetSession(req, "session")
 
 	if !middleware.IsAuthenticated(session) {
 		http.Error(res, "Forbidden", http.StatusForbidden)
 		return
 	}
 
-    userInfo := middleware.GetUserInfo(session)
-    fmt.Println("User Data:", userInfo["given_name"])
-	userName := fmt.Sprint(userInfo["given_name"])
+    userID := middleware.GetUserID(session)
+    fmt.Println("User ID:", userID)
+	userName := "Name"
 	data := PageData{
 		Name: userName,
 	}
@@ -31,11 +31,9 @@ func AddressBookHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Render the template with the data
 	err = tmpl.Execute(res, data)
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// http.ServeFile(res, req, "web/templates/dashboard.html")
 }

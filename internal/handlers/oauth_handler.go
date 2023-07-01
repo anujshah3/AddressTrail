@@ -22,7 +22,7 @@ import (
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 func GoogleLoginHandler(res http.ResponseWriter, req *http.Request){
-	session, _ := middleware.GetSession(req, "user-session")
+	session, _ := middleware.GetSession(req, "session")
 
 	if middleware.IsAuthenticated(session) {
 		http.Redirect(res, req, "/dashboard", http.StatusFound)
@@ -76,7 +76,7 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 		return
 	}
 
-	session, err := middleware.GetSession(req, "user-session")
+	session, err := middleware.GetSession(req, "session")
 	if err != nil {
 		fmt.Fprintln(res, err, "Failed to create session")
 		return
@@ -96,10 +96,7 @@ func GoogleCallBackHandler(res http.ResponseWriter, req *http.Request){
 		return
 	}
 
-	userData["userID"] = userID
-	middleware.SetAuthenticated(session, userData)
-
-	fmt.Println(userData)
+	middleware.SetAuthenticated(session, userID)
 
 	err = session.Save(req, res)
 	if err != nil {
