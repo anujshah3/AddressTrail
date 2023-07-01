@@ -35,7 +35,7 @@
       <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h2>Add New Address</h2>
-        <form class="new-address-form">
+        <form class="new-address-form" id="addressForm">
           <section class="new-address-section">
             <div class="input-container">
               <label class="new-address-label" for="street">Street</label>
@@ -77,12 +77,14 @@
                 />
               </div>
               <div class="right-input-container">
-                <label class="new-address-label" for="zip">ZIP</label>
+                <label class="new-address-label" for="postalCode"
+                  >Postal Code</label
+                >
                 <input
                   class="new-address-input"
                   type="text"
-                  id="zip"
-                  name="zip"
+                  id="postalCode"
+                  name="postalCode"
                 />
               </div>
             </div>
@@ -136,8 +138,6 @@
       </div>
     </div>
 
-    <!-- ...remaining HTML code and JavaScript... -->
-
     <script>
       const openFormBtn = document.getElementById("openFormBtn");
       const closeModalBtn = document.getElementById("closeModalBtn");
@@ -161,14 +161,38 @@
 
       addressForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        // Handle form submission here
-        // You can access the form values using addressForm.elements
-        // For example, addressForm.elements.street.value will give you the street address value
-        // You can make an AJAX request to submit the form data to the server
-        // After successful submission, you can close the modal or display a success message
-        modal.style.display = "none";
+
+        const payload = {
+          UserID: "649f0ca8a675e19e10f56798",
+          Street: addressForm.elements.street.value,
+          Unit: addressForm.elements.unit.value,
+          City: addressForm.elements.city.value,
+          State: addressForm.elements.state.value,
+          PostalCode: addressForm.elements.postalCode.value,
+          Country: addressForm.elements.country.value,
+          StartDate: addressForm.elements.startDate.value,
+          EndDate: addressForm.elements.endDate.value,
+        };
+        console.log(payload);
+
+        fetch("http://localhost:8080/api/users/addresses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            modal.style.display = "none";
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
     </script>
+
     <script>
       function toggleEndDateInput() {
         var endDateContainer = document.getElementById("endDateContainer");
@@ -183,6 +207,7 @@
 
       function setDefaultStartDate() {
         var startDateInput = document.getElementById("startDate");
+        var endDateInput = document.getElementById("endDate");
 
         var today = new Date();
         var year = today.getFullYear();
@@ -191,6 +216,7 @@
 
         var todayFormatted = year + "-" + month + "-" + day;
         startDateInput.value = todayFormatted;
+        endDateInput.value = todayFormatted;
       }
 
       setDefaultStartDate();

@@ -17,7 +17,7 @@ type AddressWithDates struct {
 	UpdatedAt   time.Time
 }
 
-type UserAddresses struct {
+type UserAddressesResponse struct {
 	AddressID string
 	Street     string
 	Unit       string

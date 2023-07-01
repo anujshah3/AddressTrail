@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -44,11 +43,32 @@ func DeleteUserHandler(c *gin.Context) {
 	})
 }
 
+type AddAddressToUserPayload struct {
+	UserID     string
+	Street     string
+	Unit       string
+	City       string
+	State      string
+	PostalCode string
+	Country    string
+	StartDate  string
+	EndDate    string
+}
 
 func AddAddressToUserHandler(c *gin.Context) {
-	userID := c.PostForm("userID")
-	startDateStr := c.PostForm("startDate")
-	endDateStr := c.PostForm("endDate")
+    var payload AddAddressToUserPayload
+
+	if err := c.BindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid Payload",
+		})
+		return
+	}
+
+	userID := payload.UserID
+	startDateStr := payload.StartDate
+	endDateStr := payload.EndDate
+	
 	startDate, err := time.Parse("2006-01-02", startDateStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -66,12 +86,12 @@ func AddAddressToUserHandler(c *gin.Context) {
 	}
 
 	address := &models.Address{
-		Street:     c.PostForm("street"),
-		Unit:       c.PostForm("unit"),
-		City:       c.PostForm("city"),
-		State:      c.PostForm("state"),
-		PostalCode: c.PostForm("postalCode"),
-		Country:    c.PostForm("country"),
+		Street:     payload.Street,
+		Unit:       payload.Unit,
+		City:       payload.City,
+		State:      payload.State,
+		PostalCode: payload.PostalCode,
+		Country:    payload.Country,
 	}
 
 	addressID, err := services.InsertAddress(address)
@@ -90,7 +110,7 @@ func AddAddressToUserHandler(c *gin.Context) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	fmt.Println(addressWithDates, userID)
+
 	err = services.AddNewAddressToUser(userID, addressWithDates)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -100,6 +120,7 @@ func AddAddressToUserHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"addressID": addressID,
 		"message": "Address added to user successfully",
 	})
 }

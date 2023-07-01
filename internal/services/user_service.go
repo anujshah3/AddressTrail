@@ -112,7 +112,7 @@ func DeleteAddressFromUser(userID string, address *models.AddressWithDates) erro
 
 
 
-func GetUserAddresses(userID string) ([]*models.UserAddresses, error) {
+func GetUserAddresses(userID string) ([]*models.UserAddressesResponse, error) {
 	client, err := config.GetMongoDBClient()
 	if err != nil {
 		return nil, err
@@ -128,7 +128,7 @@ func GetUserAddresses(userID string) ([]*models.UserAddresses, error) {
 	// projection := bson.M{"addresses": 1}
 	projection := bson.M{"addresses.addressid": 1, "addresses.startdate": 1, "addresses.enddate": 1}
 
-	result := []*models.UserAddresses{}
+	result := []*models.UserAddressesResponse{}
 	cursor, err := userCollection.Find(context.Background(), filter, options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func GetUserAddresses(userID string) ([]*models.UserAddresses, error) {
 				return nil, err
 			}
 
-			userAddress := &models.UserAddresses{
+			userAddress := &models.UserAddressesResponse{
 				AddressID:  address.AddressID,
 				Street:     addressDetails.Street,
 				Unit:       addressDetails.Unit,
