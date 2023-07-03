@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/anujshah3/AddressTrail/internal/handlers"
-	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 	func SetupDevAPIRoutes(router *gin.Engine) {
@@ -30,12 +29,11 @@ import (
 		router.GET("/", func(c *gin.Context) {
         	c.HTML(http.StatusOK, "index.html", nil)
     	})
-		router.GET("/login", gin.WrapF(handlers.GoogleLoginHandler))
-		router.GET("/auth/google/callback", gin.WrapF(handlers.GoogleCallBackHandler))
-		router.GET("/dashboard", gin.WrapF(middleware.AuthMiddleware(handlers.DashboardHandler)))
-		router.GET("/addresses", gin.WrapF(middleware.AuthMiddleware(handlers.AddressBookHandler)))
-
-		// router.GET("/logout", gin.WrapF(handlers.LogoutHandler))
+		router.GET("/login", handlers.GoogleLoginHandler)
+		router.GET("/auth/google/callback", handlers.GoogleCallBackHandler)
+		router.GET("/dashboard", handlers.DashboardHandler)
+		router.GET("/addresses", handlers.AddressBookHandler)
+		// router.GET("/logout", handlers.LogoutHandler)
 
 		router.Static("/static", "./web/static")
 	}
