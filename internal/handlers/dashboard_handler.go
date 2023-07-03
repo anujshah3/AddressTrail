@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,15 +43,14 @@ type PageData struct {
 // }
 
 func DashboardHandler(c *gin.Context) {
-	// session, _ := middleware.GetSession(c.Request, "session")
 
-	// if !middleware.IsAuthenticated(session) {
-	// 	c.AbortWithStatus(http.StatusForbidden)
-	// 	return
-	// }
+	if !middleware.IsAuthenticated(c) {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
 
-	// userID := middleware.GetUserID(session)
-	// fmt.Println(userID)
+	userID := middleware.GetUserID(c)
+	fmt.Println(userID)
 	userName := "Name"
 	data := PageData{
 		Name: userName,

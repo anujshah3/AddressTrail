@@ -2,58 +2,47 @@ package middleware
 
 import (
 	"net/http"
-	"os"
 
-	"github.com/gorilla/sessions"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
-var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
-
-func GetSession(req *http.Request, sessionName string) (*sessions.Session, error) {
-	session, err := store.Get(req, sessionName)
-	if err != nil {
-		return nil, err
-	}
-
-	return session, nil
+func CreateSession(c *gin.Context, userID string,  userName string) {
+	session := sessions.Default(c)
+	session.Set("authenticated", true)
+	session.Set("userID", userID)
+	session.Set("userName", userName)
+	session.Options(sessions.Options{
+		Path:   "/",
+		MaxAge: 600,
+	})
+	session.Save()
 }
 
-func SetAuthenticated(session *sessions.Session, userID string) {
-	session.Values["authenticated"] = true
-	session.Values["userID"] = userID
-	session.Options.MaxAge = 10 * 60
+func IsAuthenticated(c *gin.Context) bool {
+	session := sessions.Default(c)
+	auth := session.Get("authenticated")
+	return auth != nil && auth.(bool)
 }
 
-func IsAuthenticated(session *sessions.Session) bool {
-	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
-		return true
-	}
-
-	return false
+func GetUserID(c *gin.Context) string {
+	session := sessions.Default(c)
+	return session.Get("userID").(string)
 }
 
-func GetUserID(session *sessions.Session) string {
-	if userID, ok := session.Values["userID"].(string); ok {
-		return userID
-	}
-
-	return ""
+func ClearSession(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
 }
 
-func ClearSession(session *sessions.Session) {
-	session.Options.MaxAge = -1
-	session.Save(nil, nil)
-}
-
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(res http.ResponseWriter, req *http.Request) {
-		session, _ := GetSession(req, "session")
-
-		if !IsAuthenticated(session) {
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if !IsAuthenticated(c) {
+			c.Redirect(http.StatusSeeOther, "/login")
+			c.Abort()
 			return
 		}
-
-		next(res, req)
+		c.Next()
 	}
 }

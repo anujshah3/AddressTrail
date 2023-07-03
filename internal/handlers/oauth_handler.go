@@ -13,13 +13,10 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/anujshah3/AddressTrail/config"
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/anujshah3/AddressTrail/internal/models"
 	"github.com/anujshah3/AddressTrail/internal/services"
-	"github.com/gorilla/sessions"
 )
-
-
-var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 // func GoogleLoginHandler(res http.ResponseWriter, req *http.Request){
 // 	session, _ := middleware.GetSession(req, "session")
@@ -30,14 +27,19 @@ var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 // 	}
 
 // 	googleConfig := config.SetupConfig()
-// 	RandomString := os.Getenv("RANDOM_STRING")	
-		
+// 	RandomString := os.Getenv("RANDOM_STRING")
+
 // 	url := googleConfig.AuthCodeURL(RandomString)
 
 // 	http.Redirect(res, req, url, http.StatusSeeOther)
 // }
 func GoogleLoginHandler(c *gin.Context) {
-	// Add logic to redirect if session exists
+	
+	if middleware.IsAuthenticated(c) {
+		c.Redirect(http.StatusFound, "/dashboard")
+		return
+	}
+
 	googleConfig := config.SetupConfig()
 	RandomString := os.Getenv("RANDOM_STRING")
 
@@ -158,12 +160,6 @@ func GoogleCallBackHandler(c *gin.Context) {
 		return
 	}
 
-	// session, err := middleware.GetSession(c.Request, "session")
-	// if err != nil {
-	// 	c.String(http.StatusInternalServerError, err.Error()+" Failed to create session")
-	// 	return
-	// }
-
 	gob.Register(userData)
 
 	user := &models.User{
@@ -172,18 +168,14 @@ func GoogleCallBackHandler(c *gin.Context) {
 		Email:     userData["email"].(string),
 		Addresses: []*models.AddressWithDates{},
 	}
+
 	userID, err := services.AddUser(user)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to add user to the database")
 		return
 	}
-	fmt.Println(userID)
-	// middleware.SetAuthenticated(session, userID)
 
-	// err = session.Save(c.Request, c.Writer)
-	// if err != nil {
-	// 	c.String(http.StatusInternalServerError, err.Error()+" Failed to save session")
-	// 	return
-	// }
+	middleware.CreateSession(c, userID, user.Name)
+
 	c.Redirect(http.StatusFound, "/dashboard")
 }

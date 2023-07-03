@@ -23,6 +23,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -57,6 +58,7 @@ require (
 
 require (
 	cloud.google.com/go/compute/metadata v0.2.0 // indirect
+	github.com/gin-contrib/sessions v0.0.5
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/sessions v1.2.1
 	golang.org/x/net v0.11.0 // indirect
