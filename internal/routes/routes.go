@@ -37,10 +37,9 @@ import (
 		router.Use(middleware.AuthMiddleware())
 
 		router.GET("/dashboard", handlers.DashboardHandler)
-		router.GET("/addresses", handlers.AddressBookHandler)
-		// router.GET("/logout", func(c *gin.Context) {
-		// 	middleware.ClearSession(c)
-		// 	c.Redirect(http.StatusSeeOther, "/")
-		// })
+		router.GET("/logout", func(c *gin.Context) {
+			middleware.ClearSession(c)
+			c.Redirect(http.StatusSeeOther, "/")
+		})
 
 	}

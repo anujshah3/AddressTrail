@@ -19,76 +19,18 @@
           <span class="right-nav-links navbar-links"
             >Welcome, {{ .Name }}!</span
           >
-          <a href="/" class="right-nav-links navbar-links">Dashboard</a>
-          <a href="/addresses" class="right-nav-links navbar-links"
+          <a href="#" id="dashboard-link" class="right-nav-links navbar-links"
+            >Dashboard</a
+          >
+          <a
+            href="#"
+            id="manage-addresses-link"
+            class="right-nav-links navbar-links"
             >Manage Address</a
           >
           <a href="/" class="right-nav-links navbar-links">Log Out</a>
         </div>
       </nav>
     </header>
-    <section class="container">
-      <div class="left left-home map-timeline-container">
-        <section class="timeline-section" id="timeline-section"></section>
-      </div>
-      <div class="right"></div>
-    </section>
-    <script>
-      fetch(`http://localhost:8080/api/users/addresses`)
-        .then((response) => response.json())
-        .then((data) => {
-          const timelineSection = document.getElementById("timeline-section");
-          const ul = document.createElement("ul");
-          ul.classList.add("timeline");
-
-          let isLeft = true;
-
-          for (let i = data.length - 1; i >= 0; i--) {
-            const address = data[i];
-            const li = document.createElement("li");
-            const startDate = new Date(address.StartDate);
-            const endDate = new Date(address.EndDate);
-
-            const startMonth = startDate.toLocaleString("default", {
-              month: "short",
-            });
-            const endMonth = endDate.toLocaleString("default", {
-              month: "short",
-            });
-
-            const startMonthYear = `${startMonth} ${startDate.getFullYear()}`;
-            const endMonthYear = `${endMonth} ${endDate.getFullYear()}`;
-
-            const addressHTML = `
-              <div class="${
-                isLeft ? "left-position-address" : "right-position-address"
-              }">
-                <div class="year-wrapper">
-                  <span class="year">${startMonthYear} - ${endMonthYear}</span>
-                </div>
-                <div class="address">
-                  <span class="address-street">${address.Street}${
-              address.Unit ? ", " + address.Unit : ""
-            }</span>
-                  <span class="address-city">${address.City}</span>
-                  <span class="address-state">${address.State}${
-              address.PostalCode ? ", " + address.PostalCode : ""
-            }</span>
-                </div>
-              </div>
-            `;
-            li.innerHTML = addressHTML;
-            li.dataset.addressId = address.AddressID;
-            ul.appendChild(li);
-
-            isLeft = !isLeft;
-          }
-
-          timelineSection.appendChild(ul);
-        })
-        .catch((error) => {
-          console.error("Error fetching user addresses:", error);
-        });
-    </script>
   </body>
 </html>
