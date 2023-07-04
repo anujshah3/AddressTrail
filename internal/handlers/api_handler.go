@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/anujshah3/AddressTrail/internal/middleware"
 	"github.com/anujshah3/AddressTrail/internal/models"
 	"github.com/anujshah3/AddressTrail/internal/services"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,12 @@ func AddNewUserHandler(c *gin.Context) {
 }
 
 func DeleteUserHandler(c *gin.Context) {
+	// To test api's from postman
 	userID := c.PostForm("userID")
+
+	if userID == "" {
+		userID = middleware.GetUserID(c)
+	}
 	err := services.DeleteUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -65,8 +71,12 @@ func AddAddressToUserHandler(c *gin.Context) {
 		})
 		return
 	}
-
 	userID := payload.UserID
+
+	if userID == "" {
+		userID = middleware.GetUserID(c)
+	}
+
 	startDateStr := payload.StartDate
 	endDateStr := payload.EndDate
 	
@@ -129,6 +139,11 @@ func AddAddressToUserHandler(c *gin.Context) {
 
 func UpdateUserAddressHandler(c *gin.Context) {
 	userID := c.PostForm("userID")
+
+	if userID == "" {
+		userID = middleware.GetUserID(c)
+	}
+
 	addressID := c.PostForm("addressID")
 
 	address, err := services.GetAddressByID(addressID)
@@ -273,6 +288,10 @@ func UpdateUserAddressHandler(c *gin.Context) {
 
 func GetUserAddressesHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		userID = middleware.GetUserID(c)
+	}
+
 	addresses, err := services.GetUserAddresses(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

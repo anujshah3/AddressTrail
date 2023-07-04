@@ -27,6 +27,8 @@ import (
 
 	func SetupWebRoutes(router *gin.Engine) {
 		router.LoadHTMLGlob("web/templates/*.html")
+		router.Static("/static", "./web/static")
+
 		router.GET("/", func(c *gin.Context) {
         	c.HTML(http.StatusOK, "index.html", nil)
     	})
@@ -36,10 +38,9 @@ import (
 
 		router.GET("/dashboard", handlers.DashboardHandler)
 		router.GET("/addresses", handlers.AddressBookHandler)
-		router.GET("/logout", func(c *gin.Context) {
-			middleware.ClearSession(c)
-			c.Redirect(http.StatusSeeOther, "/")
-		})
+		// router.GET("/logout", func(c *gin.Context) {
+		// 	middleware.ClearSession(c)
+		// 	c.Redirect(http.StatusSeeOther, "/")
+		// })
 
-		router.Static("/static", "./web/static")
 	}

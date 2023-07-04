@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -34,7 +35,6 @@ import (
 // 	http.Redirect(res, req, url, http.StatusSeeOther)
 // }
 func GoogleLoginHandler(c *gin.Context) {
-	
 	if middleware.IsAuthenticated(c) {
 		c.Redirect(http.StatusFound, "/dashboard")
 		return
@@ -44,6 +44,8 @@ func GoogleLoginHandler(c *gin.Context) {
 	RandomString := os.Getenv("RANDOM_STRING")
 
 	url := googleConfig.AuthCodeURL(RandomString)
+
+	log.Printf("Redirecting to URL: %s\n", url)
 
 	c.Redirect(http.StatusSeeOther, url)
 }
@@ -176,6 +178,8 @@ func GoogleCallBackHandler(c *gin.Context) {
 	}
 
 	middleware.CreateSession(c, userID, user.Name)
+
+	log.Printf("Authenticated Successfully:!\n")
 
 	c.Redirect(http.StatusFound, "/dashboard")
 }

@@ -163,7 +163,6 @@
         event.preventDefault();
 
         const payload = {
-          UserID: "649f0ca8a675e19e10f56798",
           Street: addressForm.elements.street.value,
           Unit: addressForm.elements.unit.value,
           City: addressForm.elements.city.value,
@@ -222,9 +221,7 @@
       setDefaultStartDate();
     </script>
     <script>
-      fetch(
-        "http://localhost:8080/api/users/addresses?userID=649f0ca8a675e19e10f56798"
-      )
+      fetch("http://localhost:8080/api/users/addresses")
         .then((response) => response.json())
         .then((data) => {
           const addressListContainer = document.getElementById(
