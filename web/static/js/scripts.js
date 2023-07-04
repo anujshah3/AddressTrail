@@ -1,4 +1,6 @@
 let addressesData = null;
+let dashboardSectionDisplay = false;
+let manageAddressSectionDisplay = false;
 
 async function fetchAddresses() {
   console.log(addressesData);
@@ -406,21 +408,34 @@ async function addNewAddress(addressData) {
 document.addEventListener("DOMContentLoaded", function () {
   addTimelineSection();
   loadDashboard();
+  dashboardSectionDisplay = true;
 
   document
     .getElementById("dashboard-link")
     .addEventListener("click", function (event) {
       event.preventDefault();
-      removeManageAddressSection();
-      addTimelineSection();
-      loadDashboard();
+      if (manageAddressSectionDisplay) {
+        removeManageAddressSection();
+        manageAddressSectionDisplay = false;
+      }
+      if (!dashboardSectionDisplay) {
+        addTimelineSection();
+        loadDashboard();
+        dashboardSectionDisplay = true;
+      }
     });
   document
     .getElementById("manage-addresses-link")
     .addEventListener("click", function (event) {
       event.preventDefault();
-      removeTimelineSection();
-      addManageAddressSection();
-      loadManageAddresses();
+      if (dashboardSectionDisplay) {
+        removeTimelineSection();
+        dashboardSectionDisplay = false;
+      }
+      if (!manageAddressSectionDisplay) {
+        addManageAddressSection();
+        loadManageAddresses();
+        manageAddressSectionDisplay = true;
+      }
     });
 });
