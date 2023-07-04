@@ -1,3 +1,21 @@
+let addressesData = null;
+
+async function fetchAddresses() {
+  console.log(addressesData);
+  if (addressesData !== null) {
+    return Promise.resolve(addressesData);
+  } else {
+    try {
+      const response = await fetch("http://localhost:8080/api/users/addresses");
+      const data = await response.json();
+      addressesData = data;
+      return addressesData;
+    } catch (error) {
+      console.error("Error fetching user addresses:", error);
+    }
+  }
+}
+
 function addTimelineSection() {
   const container = document.createElement("div");
   container.id = "timeline-container";
@@ -33,8 +51,7 @@ function removeTimelineSection() {
 }
 
 function loadDashboard() {
-  fetch(`http://localhost:8080/api/users/addresses`)
-    .then((response) => response.json())
+  fetchAddresses()
     .then((data) => {
       const timelineSection = document.getElementById("timeline-section");
       const ul = document.createElement("ul");
@@ -88,6 +105,74 @@ function loadDashboard() {
     .catch((error) => {
       console.error("Error fetching user addresses:", error);
     });
+}
+
+function addManageAddressEventListeners() {
+  const modal = document.getElementById("modal");
+  const openFormBtn = document.getElementById("openFormBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const addressForm = document.getElementById("addressForm");
+
+  openFormBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  closeModalBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  addressForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const payload = {
+      Street: addressForm.elements.street.value,
+      Unit: addressForm.elements.unit.value,
+      City: addressForm.elements.city.value,
+      State: addressForm.elements.state.value,
+      PostalCode: addressForm.elements.postalCode.value,
+      Country: addressForm.elements.country.value,
+      StartDate: addressForm.elements.startDate.value,
+      EndDate: addressForm.elements.endDate.value,
+    };
+    console.log(payload);
+    addNewAddress(payload);
+    modal.style.display = "none";
+    addressesData = null;
+    removeManageAddressSection();
+    addManageAddressSection();
+    loadManageAddresses();
+  });
+}
+
+function removeManageAddressEventListeners() {
+  const modal = document.getElementById("modal");
+  const openFormBtn = document.getElementById("openFormBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const addressForm = document.getElementById("addressForm");
+
+  openFormBtn.removeEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  closeModalBtn.removeEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.removeEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  addressForm.removeEventListener("submit", (event) => {
+    event.preventDefault();
+  });
 }
 
 function addManageAddressSection() {
@@ -186,6 +271,7 @@ function addManageAddressSection() {
   saveContainer.classList.add("save-container");
 
   const saveButton = document.createElement("input");
+  saveButton.id = "submit-new-address";
   saveButton.type = "submit";
   saveButton.value = "Save";
   saveButton.onclick = () => true;
@@ -206,11 +292,13 @@ function addManageAddressSection() {
   wrapperDiv.appendChild(container);
 
   document.body.appendChild(wrapperDiv);
+  addManageAddressEventListeners();
 }
 
 function removeManageAddressSection() {
   const container = document.getElementById("manage-address-container");
   if (container) {
+    removeManageAddressEventListeners();
     container.remove();
   }
 }
@@ -241,8 +329,7 @@ function setDefaultStartDate() {
 }
 
 function loadManageAddresses() {
-  fetch("http://localhost:8080/api/users/addresses")
-    .then((response) => response.json())
+  fetchAddresses()
     .then((data) => {
       const addressListContainer = document.getElementById(
         "address-list-container"
@@ -291,6 +378,29 @@ function loadManageAddresses() {
     .catch((error) => {
       console.error("Error fetching user addresses:", error);
     });
+}
+
+async function addNewAddress(addressData) {
+  try {
+    const response = await fetch("http://localhost:8080/api/users/addresses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(addressData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } else {
+      throw new Error("Request failed with status: " + response.status);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
