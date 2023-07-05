@@ -76,17 +76,28 @@ func UpdateCurrentAddressFlag(userID string, endDate time.Time) error {
         return err
     }
     defer client.Disconnect(context.Background())
-    
+
     userCollection := config.GetCollection(client, "user")
-    
+    fmt.Println("Debug - endDate:", endDate)
+
     filter := bson.M{"id": userID, "addresses.current": true}
-    update := bson.M{"$set": bson.M{"addresses.$.current": false, "addresses.$.endDate": endDate}}
-    
-    _, err = userCollection.UpdateOne(context.Background(), filter, update)
+    fmt.Println("Debug - filter:", filter)
+
+    update := bson.M{
+        "$set": bson.M{
+            "addresses.$.endDate": endDate,
+			"addresses.$.current": false,
+        },
+    }
+    fmt.Println("Debug - update:", update)
+
+    result, err := userCollection.UpdateOne(context.Background(), filter, update)
     if err != nil {
         return err
     }
-    
+    fmt.Println("Debug - matched:", result.MatchedCount)
+    fmt.Println("Debug - modified:", result.ModifiedCount)
+
     return nil
 }
 

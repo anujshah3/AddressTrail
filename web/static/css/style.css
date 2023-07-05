@@ -95,6 +95,14 @@ header {
   width: 50%;
 }
 
+.trail-div {
+  background-image: url("../img/trail.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+}
+
 .welcome {
   font-size: 25px;
   font-weight: 800;

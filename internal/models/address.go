@@ -7,6 +7,4 @@ type Address struct {
 	State      string
 	PostalCode string
 	Country    string
-	Latitude   float64
-	Longitude  float64
 }

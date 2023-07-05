@@ -110,7 +110,7 @@ func AddAddressToUserHandler(c *gin.Context) {
 	}
 
 	var endDate time.Time
-	if current && endDateStr == "" {
+	if current{
 		endDate = time.Date(9999, time.December, 31, 0, 0, 0, 0, time.UTC)
 	} else {
 		endDate, err = time.Parse("2006-01-02", endDateStr)
@@ -148,9 +148,9 @@ func AddAddressToUserHandler(c *gin.Context) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-
-	err = services.UpdateCurrentAddressFlag(userID, startDate)
-
+	if current{
+		err = services.UpdateCurrentAddressFlag(userID, startDate)
+	}
 	err = services.AddNewAddressToUser(userID, addressWithDates)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
