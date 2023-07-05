@@ -17,6 +17,7 @@ import (
 	}
 
 	func SetupAPIRoutes(router *gin.Engine) {
+		router.POST("/api/company-user-data", handlers.CompanyUserDataHandler)
 		router.GET("/api/users", handlers.GetUserDetailsHandler)
 		router.POST("/api/users", handlers.AddNewUserHandler)
 		router.DELETE("/api/users", handlers.DeleteUserHandler)

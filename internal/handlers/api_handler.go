@@ -321,3 +321,30 @@ func GetUserAddressesHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, addresses)
 }
+
+
+
+func CompanyUserDataHandler(c *gin.Context) {
+	var payload models.AddCompanyUserDataPayload
+	
+	if err := c.BindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid Payload",
+		})
+		return
+	}
+
+	companyID, err := services.AddCompanyData(&payload)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Company data added successfully",
+		"user":    payload.UserID,
+		"company": companyID,
+	})
+}
