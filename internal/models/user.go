@@ -22,6 +22,7 @@ type AddressWithDates struct {
 
 type UserAddressesResponse struct {
 	AddressID string
+	Current     bool
 	Street     string
 	Unit       string
 	City       string

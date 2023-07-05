@@ -336,7 +336,7 @@ func GetUserAddressesHandler(c *gin.Context) {
 
 func CompanyUserDataHandler(c *gin.Context) {
 	var payload models.AddCompanyUserDataPayload
-	
+
 	if err := c.BindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid Payload",
@@ -352,9 +352,23 @@ func CompanyUserDataHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	currentAddress, err := services.GetUserCurrentAddress(payload.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	response := gin.H{
 		"message": "Company data added successfully",
 		"user":    payload.UserID,
 		"company": companyID,
-	})
+	}
+
+	if currentAddress != nil {
+		response["currentAddress"] = currentAddress
+	}
+
+	c.JSON(http.StatusOK, response)
 }

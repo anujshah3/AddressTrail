@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -168,6 +169,7 @@ func GetUserAddresses(userID string) ([]*models.UserAddressesResponse, error) {
 
 			userAddress := &models.UserAddressesResponse{
 				AddressID:  address.AddressID,
+				Current:    address.Current,
 				Street:     addressDetails.Street,
 				Unit:       addressDetails.Unit,
 				City:       addressDetails.City,
@@ -223,4 +225,19 @@ func UpdateFilteredAddresses(userID string, addressID string, startDate time.Tim
 	}
 
 	return nil
+}
+
+func GetUserCurrentAddress(userID string) (*models.UserAddressesResponse, error) {
+	addresses, err := GetUserAddresses(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, address := range addresses {
+		if address.Current {
+			return address, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no current address not found: %s", userID)
 }
