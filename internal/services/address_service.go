@@ -102,3 +102,47 @@ func UpdateAddress(addressID string, address *models.Address) error {
 
 	return nil
 }
+
+// func GetCoordinates(address string) (float64, float64, error) {
+// 	apiURL := "https://maps.googleapis.com/maps/api/geocode/json"
+// 	apiKey := "API_KEY"
+
+// 	queryParams := url.Values{}
+// 	queryParams.Set("address", address)
+// 	queryParams.Set("key", apiKey)
+// 	requestURL := fmt.Sprintf("%s?%s", apiURL, queryParams.Encode())
+
+// 	response, err := http.Get(requestURL)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+// 	defer response.Body.Close()
+
+// 	body, err := ioutil.ReadAll(response.Body)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+
+// 	var data struct {
+// 		Results []struct {
+// 			Geometry struct {
+// 				Location struct {
+// 					Lat float64
+// 					Lng float64
+// 				}
+// 			}
+// 		}
+// 	}
+// 	err = json.Unmarshal(body, &data)
+// 	if err != nil {
+// 		return 0, 0, err
+// 	}
+
+// 	if len(data.Results) > 0 {
+// 		lat := data.Results[0].Geometry.Location.Lat
+// 		lng := data.Results[0].Geometry.Location.Lng
+// 		return lat, lng, nil
+// 	}
+
+// 	return 0, 0, fmt.Errorf("no results found")
+// }

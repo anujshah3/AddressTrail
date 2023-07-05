@@ -34,6 +34,9 @@ import (
 		router.GET("/", func(c *gin.Context) {
         	c.HTML(http.StatusOK, "index.html", nil)
     	})
+
+		router.GET("/company", handlers.CompanyDashboardHandler)
+
 		router.GET("/login", handlers.GoogleLoginHandler)
 		router.GET("/auth/google/callback", handlers.GoogleCallBackHandler)
 		router.Use(middleware.AuthMiddleware())
