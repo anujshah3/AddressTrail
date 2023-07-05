@@ -12,6 +12,22 @@ import (
 	"github.com/anujshah3/AddressTrail/internal/models"
 )
 
+func GetUserDetails(userID string) (models.User, error) {
+	client, err := config.GetMongoDBClient()
+	if err != nil {
+		return models.User{}, err
+	}
+	defer client.Disconnect(context.Background())
+
+	userCollection := config.GetCollection(client, "user")
+	user := models.User{}
+	err = userCollection.FindOne(context.Background(), bson.M{"id": userID}).Decode(&user)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
 
 func AddUser(user *models.User) (string, error) {
 	client, err := config.GetMongoDBClient()

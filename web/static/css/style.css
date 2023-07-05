@@ -298,7 +298,8 @@ header {
   padding-top: 15px;
 }
 
-.add-new-address {
+.add-new-address,
+.copy-key-button {
   margin: 20px 0 0;
   padding: 1.42em 2.3em;
   background: none;
@@ -427,4 +428,15 @@ header {
 
 .input-container-row {
   display: flex;
+}
+
+#copyUserKeyBtn {
+  justify-content: space-between;
+}
+.left-copyBtn {
+  text-align: center;
+}
+
+.right-copyBtn {
+  text-align: right;
 }

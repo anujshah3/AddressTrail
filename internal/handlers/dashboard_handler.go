@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
 	"github.com/anujshah3/AddressTrail/internal/middleware"
+	"github.com/anujshah3/AddressTrail/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -50,10 +50,10 @@ func DashboardHandler(c *gin.Context) {
 	}
 
 	userID := middleware.GetUserID(c)
-	fmt.Println(userID)
-	userName := "Name"
+	user, err := services.GetUserDetails(userID)
+
 	data := PageData{
-		Name: userName,
+		Name: user.Name,
 	}
 
 	tmpl, err := template.ParseFiles("web/templates/dashboard.html")

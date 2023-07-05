@@ -1,6 +1,23 @@
 let addressesData = null;
+let userName = null;
+let userID = null;
 let dashboardSectionDisplay = false;
 let manageAddressSectionDisplay = false;
+
+async function fetchUserDetails() {
+  console.log(userName);
+  console.log(userID);
+  try {
+    const response = await fetch("http://localhost:8080/api/users");
+    const data = await response.json();
+    userName = data.Name;
+    userID = data.ID;
+    return true;
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    return null;
+  }
+}
 
 async function fetchAddresses() {
   console.log(addressesData);
@@ -109,7 +126,23 @@ function loadDashboard() {
     });
 }
 
+function copyUserKey() {
+  var userKey = document.getElementById("user-key");
+
+  navigator.clipboard
+    .writeText(userKey.innerText)
+    .then(function () {
+      console.log("Key copied!");
+    })
+    .catch(function (error) {
+      console.error("Failed to copy user key: ", error);
+    });
+}
+
 function addManageAddressEventListeners() {
+  document
+    .getElementById("copyUserKeyBtn")
+    .addEventListener("click", copyUserKey);
   const modal = document.getElementById("modal");
   const openFormBtn = document.getElementById("openFormBtn");
   const closeModalBtn = document.getElementById("closeModalBtn");
@@ -153,6 +186,10 @@ function addManageAddressEventListeners() {
 }
 
 function removeManageAddressEventListeners() {
+  document
+    .getElementById("copyUserKeyBtn")
+    .removeEventListener("click", copyUserKey);
+
   const modal = document.getElementById("modal");
   const openFormBtn = document.getElementById("openFormBtn");
   const closeModalBtn = document.getElementById("closeModalBtn");
@@ -188,6 +225,19 @@ function addManageAddressSection() {
   addressListContainer.classList.add("address-list-container");
   addressListContainer.id = "address-list-container";
 
+  const userKeyButton = document.createElement("button");
+  userKeyButton.classList.add("copy-key-button");
+  userKeyButton.id = "copyUserKeyBtn";
+  userKeyButton.type = "button";
+  userKeyButton.innerHTML = `
+    <div class='left-copyBtn'>
+    <span id="user-key" class="button__label">${userID}</span>
+    </div>
+    <div class='right-copyBtn'>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    </div>
+  `;
+
   const addButton = document.createElement("button");
   addButton.classList.add("add-new-address");
   addButton.id = "openFormBtn";
@@ -196,6 +246,7 @@ function addManageAddressSection() {
     <span class="button__label">Add New Address</span>
   `;
 
+  addressListContainer.appendChild(userKeyButton);
   addressListContainer.appendChild(addButton);
 
   container.appendChild(addressListContainer);
@@ -406,6 +457,7 @@ async function addNewAddress(addressData) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  fetchUserDetails();
   addTimelineSection();
   loadDashboard();
   dashboardSectionDisplay = true;

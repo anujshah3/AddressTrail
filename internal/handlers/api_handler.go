@@ -11,6 +11,25 @@ import (
 	"github.com/google/uuid"
 )
 
+func GetUserDetailsHandler(c *gin.Context) {
+	// To test api's from postman
+	userID := c.Query("userID")
+
+	if userID == "" {
+		userID = middleware.GetUserID(c)
+	}
+
+	user, err := services.GetUserDetails(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 func AddNewUserHandler(c *gin.Context) {
 	user := &models.User{
 		ID:    uuid.New().String(),
