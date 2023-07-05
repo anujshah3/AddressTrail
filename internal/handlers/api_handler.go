@@ -77,6 +77,7 @@ type AddAddressToUserPayload struct {
 	State      string
 	PostalCode string
 	Country    string
+	Current    bool
 	StartDate  string
 	EndDate    string
 }
@@ -97,6 +98,7 @@ func AddAddressToUserHandler(c *gin.Context) {
 	}
 
 	startDateStr := payload.StartDate
+	current := payload.Current
 	endDateStr := payload.EndDate
 	
 	startDate, err := time.Parse("2006-01-02", startDateStr)
@@ -107,12 +109,17 @@ func AddAddressToUserHandler(c *gin.Context) {
 		return
 	}
 
-	endDate, err := time.Parse("2006-01-02", endDateStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid endDate format",
-		})
-		return
+	var endDate time.Time
+	if current && endDateStr == "" {
+		endDate = time.Date(9999, time.December, 31, 0, 0, 0, 0, time.UTC)
+	} else {
+		endDate, err = time.Parse("2006-01-02", endDateStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid endDate format",
+			})
+			return
+		}
 	}
 
 	address := &models.Address{
@@ -135,11 +142,14 @@ func AddAddressToUserHandler(c *gin.Context) {
 
 	addressWithDates := &models.AddressWithDates{
 		AddressID: addressID,
+		Current: current,
 		StartDate: startDate,
 		EndDate:   endDate,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
+
+	err = services.UpdateCurrentAddressFlag(userID, startDate)
 
 	err = services.AddNewAddressToUser(userID, addressWithDates)
 	if err != nil {

@@ -69,6 +69,25 @@ func DeleteUser(userID string) error {
 	return nil
 }
 
+func UpdateCurrentAddressFlag(userID string, endDate time.Time) error {
+    client, err := config.GetMongoDBClient()
+    if err != nil {
+        return err
+    }
+    defer client.Disconnect(context.Background())
+    
+    userCollection := config.GetCollection(client, "user")
+    
+    filter := bson.M{"id": userID, "addresses.current": true}
+    update := bson.M{"$set": bson.M{"addresses.$.current": false, "addresses.$.endDate": endDate}}
+    
+    _, err = userCollection.UpdateOne(context.Background(), filter, update)
+    if err != nil {
+        return err
+    }
+    
+    return nil
+}
 
 func AddNewAddressToUser(userID string, address *models.AddressWithDates) error {
 

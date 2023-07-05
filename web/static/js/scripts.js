@@ -173,15 +173,13 @@ function addManageAddressEventListeners() {
       PostalCode: addressForm.elements.postalCode.value,
       Country: addressForm.elements.country.value,
       StartDate: addressForm.elements.startDate.value,
+      Current: addressForm.elements.current.checked,
       EndDate: addressForm.elements.endDate.value,
     };
     console.log(payload);
     addNewAddress(payload);
     modal.style.display = "none";
     addressesData = null;
-    removeManageAddressSection();
-    addManageAddressSection();
-    loadManageAddresses();
   });
 }
 

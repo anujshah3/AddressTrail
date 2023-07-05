@@ -13,8 +13,9 @@ type User struct {
 
 type AddressWithDates struct {
 	AddressID   string
-	StartDate time.Time
-	EndDate   time.Time
+	Current     bool
+	StartDate   time.Time
+	EndDate     time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
